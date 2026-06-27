@@ -1,0 +1,306 @@
+@import "tailwindcss";
+
+/* ════════════════════════════════════════════════════════════════
+ * Ritual · Tic Tac Toe — design tokens
+ *
+ * Angular sci-fi HUD structure (notched frames, glassy dark panels)
+ * rendered entirely in Ritual's palette: deep emerald + white from the
+ * endless-knot logo. Source of truth: Ritual_TicTacToe_Design_Brief §5.
+ * ════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* Palette — named tokens (brief §5.2) */
+  --color-ritual-green: #1a6b4e; /* brand core — muted emerald */
+  --color-ritual-glow: #2fd08a; /* the one luminous green — used sparingly */
+  --color-void: #070b09; /* base background */
+  --color-carbon: #101a15; /* panel / glass surface */
+  --color-chrome-1: #b8c7bf; /* brushed-metal light */
+  --color-chrome-2: #5e6f66; /* brushed-metal dark */
+  --color-bone: #eaf2ec; /* primary text */
+  --color-signal-red: #e5484d; /* whisper only — loss / errors */
+}
+
+/* Typography (brief §5.3). next/font sets --font-*-src on <body>, not :root,
+ * so the font tokens must be `@theme inline` — Tailwind then inlines the value
+ * into the `font-*` utilities (resolving the body-scoped var at use), rather
+ * than trying to emit it at :root where the source var doesn't exist. */
+@theme inline {
+  --font-display: var(--font-display-src), sans-serif; /* Oxanium (sci-fi) */
+  --font-body: var(--font-space-grotesk), sans-serif; /* Space Grotesk */
+  --font-data: var(--font-space-mono), monospace; /* Space Mono */
+}
+
+:root {
+  /* Notched HUD silhouette — 45° bevel, top-left + bottom-right */
+  --clip: polygon(
+    20px 0,
+    100% 0,
+    100% calc(100% - 20px),
+    calc(100% - 20px) 100%,
+    0 100%,
+    0 20px
+  );
+  --clip-sm: polygon(
+    11px 0,
+    100% 0,
+    100% calc(100% - 11px),
+    calc(100% - 11px) 100%,
+    0 100%,
+    0 11px
+  );
+}
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    background: var(--color-void);
+    color: var(--color-bone);
+    /* Reference the next/font source var directly — it lives on <body>, so a
+       two-hop :root token would collapse to invalid. (Utilities use @theme
+       inline, which inlines the same source var.) */
+    font-family: var(--font-space-grotesk), sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: inherit;
+  }
+  a {
+    color: inherit;
+  }
+
+  /* Visible keyboard focus on every interactive element (brief §11) */
+  :focus-visible {
+    outline: 2px solid var(--color-ritual-glow);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+}
+
+@layer utilities {
+  .clip {
+    clip-path: var(--clip);
+  }
+  .clip-sm {
+    clip-path: var(--clip-sm);
+  }
+}
+
+@layer components {
+  /* Cost Button — primary action that spends tokens; always shows the amount
+     inline so a payment is never a surprise (brief §8). */
+  .btn-cost {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 16px 22px;
+    clip-path: var(--clip-sm);
+    background: linear-gradient(180deg, var(--color-ritual-green), #0f4734);
+    border: 1px solid var(--color-ritual-glow);
+    color: var(--color-bone);
+    font-family: var(--font-display-src), sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    font-size: 15px;
+    box-shadow: 0 8px 30px rgba(47, 208, 138, 0.22);
+    transition: box-shadow 0.25s ease;
+  }
+  .btn-cost:hover {
+    box-shadow: 0 8px 42px rgba(47, 208, 138, 0.45);
+  }
+  .btn-cost__amount {
+    font-family: var(--font-data);
+    font-weight: 400;
+    font-size: 13px;
+    opacity: 0.85;
+  }
+
+  /* Ghost Button — secondary / navigation, outlined, no fill (brief §8). */
+  .btn-ghost {
+    width: 100%;
+    padding: 14px 20px;
+    clip-path: var(--clip-sm);
+    background: transparent;
+    border: 1px solid rgba(184, 199, 191, 0.3);
+    color: var(--color-bone);
+    font-family: var(--font-display-src), sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    font-size: 13px;
+    transition: border-color 0.2s ease;
+  }
+  .btn-ghost:hover {
+    border-color: var(--color-ritual-glow);
+  }
+
+  /* Board Cell — empty / player-mark (glow) / opponent-mark (chrome). */
+  .cell-btn {
+    position: relative;
+    display: flex;
+    aspect-ratio: 1;
+    align-items: center;
+    justify-content: center;
+    clip-path: var(--clip-sm);
+    background: rgba(16, 26, 21, 0.75);
+    border: 1px solid rgba(184, 199, 191, 0.16);
+    font-family: var(--font-display-src), sans-serif;
+    font-weight: 700;
+    font-size: 50px;
+    transition: border-color 0.18s ease;
+  }
+  .cell-btn:enabled:hover {
+    border-color: rgba(47, 208, 138, 0.5);
+  }
+}
+
+/* ── Motion (brief §6) — two orchestrated moments, little else ── */
+@keyframes knot-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes glow-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(47, 208, 138, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(47, 208, 138, 0.75));
+  }
+}
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes mark-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.anim-spin {
+  animation: knot-spin 2.6s linear infinite;
+}
+.anim-pulse {
+  animation: glow-pulse 1.9s ease-in-out infinite;
+}
+.anim-floaty {
+  animation: floaty 4s ease-in-out infinite;
+}
+.anim-fade-up {
+  animation: fade-up 0.55s ease both;
+}
+.anim-mark-in {
+  animation: mark-in 0.25s ease both;
+}
+.anim-blink {
+  animation: blink 1.1s ease-in-out infinite;
+}
+
+/* ── Knot grid-lock reveal — each ribbon segment pops into place, staggered
+ * by its index (--seg). The endless knot is a lattice, so it reads as the
+ * pieces locking onto the grid. ── */
+@keyframes knot-seg-in {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.knot-draw g > path {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: knot-seg-in 0.5s cubic-bezier(0.5, 1.4, 0.4, 1) both;
+  animation-delay: calc(var(--seg, 0) * 70ms);
+}
+
+/* ── Knot flip — the reveal primitive (brief §6, §8) ── */
+.flip-wrap {
+  perspective: 1500px;
+}
+.flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.66s cubic-bezier(0.6, 0.05, 0.2, 1);
+}
+.flip-inner.flipped {
+  transform: rotateY(180deg);
+}
+.flip-face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.flip-back {
+  transform: rotateY(180deg);
+}
+
+/* Reduced motion: flips become cross-fades, spin becomes a static pulse */
+@media (prefers-reduced-motion: reduce) {
+  .flip-inner {
+    transition: opacity 0.28s ease;
+  }
+  .flip-inner.flipped {
+    transform: none;
+  }
+  .anim-spin {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+  .anim-pulse,
+  .anim-floaty,
+  .anim-mark-in {
+    animation: none !important;
+  }
+  .anim-blink {
+    animation: blink 1.6s ease-in-out infinite;
+  }
+  /* grid-lock reveal: quick fade, no scale, tighter stagger */
+  .knot-draw g > path {
+    transform: none;
+    animation-duration: 0.3s;
+    animation-delay: calc(var(--seg, 0) * 26ms);
+  }
+}
