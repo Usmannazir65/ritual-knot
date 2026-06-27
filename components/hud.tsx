@@ -11,7 +11,7 @@ export function Header() {
         style={{ boxShadow: "0 0 14px rgba(47,208,138,.35)" }}
       />
       <div className="leading-none">
-        <div className="font-display text-[15px] font-bold tracking-[0.3em] text-bone">RITUAL</div>
+        <div className="font-display text-[15px] font-bold tracking-[0.2em] text-bone">RITUALKNOT</div>
         <div className="mt-1 font-data text-[9px] tracking-[0.28em] text-ritual-glow">
           TIC·TAC·TOE ARENA
         </div>

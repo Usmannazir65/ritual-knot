@@ -1,4 +1,4 @@
-# Ritual · Tic Tac Toe — Onchain Arena
+# RitualKnot · Tic Tac Toe — Onchain Arena
 
 A single-player tic-tac-toe built for the **Ritual testnet** (chain 1979). Enter
 a match for free, face a randomly drawn Ritual team member as your machine

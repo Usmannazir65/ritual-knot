@@ -29,7 +29,7 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ritual · Tic Tac Toe — Onchain Arena",
+  title: "RitualKnot · Tic Tac Toe — Onchain Arena",
   description:
     "Beat a Ritual team member at tic-tac-toe and write your win to the chain. Built for the Ritual testnet.",
 };
