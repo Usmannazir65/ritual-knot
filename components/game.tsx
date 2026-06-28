@@ -119,6 +119,9 @@ function ConnectScreen({
         >
           Need test tokens? Visit the faucet →
         </a>
+        <a href="/how-to-play" className="font-body text-[12px] text-ritual-glow no-underline">
+          New here? How to play →
+        </a>
       </div>
     </div>
   );
@@ -200,6 +203,12 @@ function LobbyScreen({ arena, actions }: { arena: Arena; actions: GameActions })
           Enter Match
         </CostButton>
         <GhostButton onClick={actions.goLeaderboard}>Leaderboard</GhostButton>
+        <a
+          href="/how-to-play"
+          className="text-center font-body text-[11px] text-bone/45 no-underline hover:text-ritual-glow"
+        >
+          How to play →
+        </a>
       </div>
     </div>
   );
